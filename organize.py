@@ -17,13 +17,34 @@ secure = ['CER', 'KEY', 'REN', 'REQ']
 all = excel + photos + music + video + python + pdf + zip_files + powerpoint + text + apps + html + word + secure
 
 folders = [
-    r"C:\Users\vivek\OneDrive",
-    r"C:\Users\vivek\Downloads"
+    r"C:\Users\user_name\OneDrive",
+    r"C:\Users\user_name\Downloads"
 ]
 
 
 def organize(folder_name, file_type_list):
-    #TODO
+    for folder in folders:  
+        folder = Path(folder)  
+        for file in folder.rglob('*'):  
+            if file.is_file():  
+                suffix = file.suffix.replace('.', '').upper()  
+                if any(suffix == ftype for ftype in all):  
+                    if any(suffix == ftype for ftype in file_type_list):  
+                        if not Path(f'{folder}/{folder_name}').exists():  
+                            new_folder = Path(f'{folder}/{folder_name}')  
+                            new_folder.mkdir()
+                        try:
+                            file.rename(f'{folder}/{folder_name}/{file.name}')  
+                        except FileExistsError:
+                            file.unlink()  
+                else:
+                    if not Path(folder / suffix).exists():  
+                        new_folder = Path(folder / suffix)
+                        new_folder.mkdir()  
+                    try:
+                        file.rename(folder / suffix / file.name)  
+                    except FileExistsError:  
+                        file.unlink()  
 
 def delete_empty_folders():
     for folder in folders:
